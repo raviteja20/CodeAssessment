@@ -1,5 +1,4 @@
 import React from 'react';
-import jQuery from 'jquery';
 import UserTextBox from './user-text-box';
 import Comment from './comment';
 
@@ -10,6 +9,7 @@ export default class UserFeed extends React.Component{
 			comments: [],
 			likes: 0
 		};
+		
 	}
 
 	componentWillMount(){
@@ -28,15 +28,15 @@ export default class UserFeed extends React.Component{
 								{commentsList}
 							</div>				
 
-							<UserTextBox addComment={this._addComment.bind(this)}/>
+							<UserTextBox addComment={this._addComment}/>
 						</div>
 					</div>
 				</div>
 			);
 	}
 
-	_addComment(commentUser, userComment)
-	{ 
+	_addComment = (commentUser, userComment) =>
+	{	
 		let date = new Date();
 		const comment={
 		  user: commentUser,
@@ -46,7 +46,6 @@ export default class UserFeed extends React.Component{
 	      timeZoneOffset: date.getTimezoneOffset(),
 	      likes: 0
 		};
-
 		this.setState({
 			comments: this.state.comments.concat([comment])
 		});
@@ -54,29 +53,20 @@ export default class UserFeed extends React.Component{
 
 
 	_fetchComments(){
-		debugger;
-		jQuery.ajax({
-			method:'GET',
-			url:'./data.json',
-			success: (comments) => {
-				debugger;
-				this.setState({comments: comments.feed})
-			}
-		});
+		fetch('./data.json').then((s)=>s.json()).then((comments)=> this.setState({comments:comments.feed}));
 	}
 
-	_getCommentsList(){
-		debugger;
+	_getCommentsList = () => {
 		return this.state.comments.map((comment)=> {
 			return 	<Comment user={comment.user}
 						value={comment.value}
 						likes={comment.likes}
 						timestamp={comment.timestamp}
-						incrementLikes={this._incrementLikes.bind(this)} />				
+						incrementLikes={this._incrementLikes} />				
 		});
 	}
 
-	_incrementLikes(timestamp){
+	_incrementLikes = (timestamp) => {
 		const comment = this.state.comments.map( (comment)=>{
 				if(comment.timestamp === timestamp)
 				{
@@ -93,13 +83,14 @@ export default class UserFeed extends React.Component{
 		if(commentsLength === 0)
 		{
 			return 'No Comments to show';
-		}else if(commentsLength === 1)
+		}
+		if(commentsLength === 1)
 		{
 			return '1 Comment';
-		}else
-		{
-			return `${commentsLength} comments`;
 		}
+		
+		return `${commentsLength} comments`;
+		
 	}
 }
 

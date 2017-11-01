@@ -3,7 +3,7 @@ import React from 'react';
 export default class UserTextBox extends React.Component{
 	render(){
 		return(
-				<form className="text-box" onSubmit ={this._onSubmit.bind(this)}>
+				<form className="text-box" onSubmit ={this._onSubmit}>
 					<div className="text-box-fields">
 						<input placeholder="User Name:" ref={user => this._user = user} />
 						<textarea placeholder="Comment" ref={comment => this._value = comment} ></textarea>
@@ -17,7 +17,7 @@ export default class UserTextBox extends React.Component{
 			);
 	}
 
-	_onSubmit(event){
+	_onSubmit = (event) => {
 		event.preventDefault();
 		if(this._user.value && this._value.value)
 		{
